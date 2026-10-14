@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-shelf",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "插件书架：把官方插件页排成卡片网格，带过滤搜索和社区色带。只改外观，安装、开关、卸载都是官方原样。Plugin Shelf: lays the official plugins page out as a card grid, with a filter box and a community accent stripe. Appearance only.",
   "license": "MIT",
   "type": "module",
