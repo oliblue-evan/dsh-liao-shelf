@@ -1,0 +1,70 @@
+{
+  "name": "dsh-plugin-shelf",
+  "version": "0.1.0",
+  "description": "插件书架：把官方插件页排成卡片网格，带过滤搜索和社区色带。只改外观，安装、开关、卸载都是官方原样。Plugin Shelf: lays the official plugins page out as a card grid, with a filter box and a community accent stripe. Appearance only.",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "dsh-web",
+    "plugins-page",
+    "cards",
+    "ui",
+    "插件页",
+    "卡片"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "liao",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oliblue-evan/dsh-plugin-shelf.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "check": "node --check lib/index.js && node --check lib/client.js",
+    "pack": "npm pack --dry-run"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [],
+      "platform": "web"
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.2.0-rc.2": "compatible"
+      }
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-client-locale": ">=0.1.6-alpha.2 <0.3.0-0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-client-locale": {
+      "optional": true
+    }
+  }
+}

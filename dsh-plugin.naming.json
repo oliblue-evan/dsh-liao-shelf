@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "policy": "dsh-plugin-naming/v1",
+  "plugin": {
+    "namespace": "liao",
+    "name": "plugin-shelf",
+    "coordinate": "liao/plugin-shelf",
+    "packageName": "dsh-plugin-shelf"
+  },
+  "names": {
+    "pluginNames": ["plugin-shelf"],
+    "loaderIds": ["liao-plugin-shelf"],
+    "services": [],
+    "tools": [],
+    "commands": [],
+    "skills": [],
+    "skillProviders": [],
+    "events": ["liao-plugin-shelf/config-changed"],
+    "settingsNamespaces": ["liao-plugin-shelf"],
+    "routes": []
+  }
+}
