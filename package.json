@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-shelf",
-  "version": "0.2.1",
-  "description": "插件书架：把官方插件页排成卡片网格，带过滤搜索和社区色带。只改外观，安装、开关、卸载都是官方原样。Plugin Shelf: lays the official plugins page out as a card grid, with a filter box and a community accent stripe. Appearance only.",
+  "version": "0.6.0",
+  "description": "插件书架：优化 DSH 官方插件页的搜索、筛选、折叠、置顶、视图与安装信息。Plugin Shelf: visual organization and convenient navigation for the native DSH plugins page.",
   "license": "MIT",
   "type": "module",
   "main": "lib/index.js",
@@ -14,13 +14,15 @@
   "files": [
     "lib/index.js",
     "lib/client.js",
+    "lib/metadata.js",
     "locale/en.json",
     "locale/zh.json",
     "cordis.patch.yml",
     "README.md",
     "README.en.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "dsh-plugin.naming.json"
   ],
   "keywords": [
     "deepseek-harness",
@@ -45,8 +47,9 @@
     "access": "public"
   },
   "scripts": {
-    "check": "node --check lib/index.js && node --check lib/client.js",
-    "pack": "npm pack --dry-run"
+    "check": "node --check lib/index.js && node --check lib/metadata.js && node --check lib/client.js",
+    "test": "node --test test/*.test.mjs",
+    "pack:check": "node test/package-check.mjs"
   },
   "dsh": {
     "bundle": {
@@ -69,5 +72,11 @@
     "@deepseek-ai/dsh-client-locale": {
       "optional": true
     }
-  }
+  },
+  "devDependencies": {
+    "jsdom": "30.1.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "packageManager": "pnpm@11.7.0"
 }

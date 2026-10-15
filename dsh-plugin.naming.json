@@ -8,15 +8,26 @@
     "packageName": "dsh-plugin-shelf"
   },
   "names": {
-    "pluginNames": ["plugin-shelf"],
-    "loaderIds": ["liao-plugin-shelf"],
+    "pluginNames": [
+      "plugin-shelf"
+    ],
+    "loaderIds": [
+      "liao-plugin-shelf",
+      "dsh-plugin-shelf"
+    ],
     "services": [],
     "tools": [],
     "commands": [],
     "skills": [],
     "skillProviders": [],
-    "events": ["liao-plugin-shelf/config-changed"],
-    "settingsNamespaces": ["liao-plugin-shelf"],
-    "routes": []
+    "events": [
+      "liao-plugin-shelf/config-changed"
+    ],
+    "settingsNamespaces": [
+      "liao-plugin-shelf"
+    ],
+    "routes": [
+      "/api/plugin-shelf/metadata"
+    ]
   }
 }

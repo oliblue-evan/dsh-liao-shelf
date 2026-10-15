@@ -1,0 +1,148 @@
+[
+  {
+    "step": "open",
+    "visible": [
+      "pkg:team",
+      "item:terminal",
+      "pkg:dsh-github-auth",
+      "pkg:dsh-usage-pill",
+      "pkg:broken-plugin",
+      "pkg:empty-description"
+    ],
+    "count": "显示 6 / 6 个插件",
+    "view": "grid",
+    "shortcuts": []
+  },
+  {
+    "step": "search",
+    "visible": [
+      "pkg:dsh-github-auth"
+    ],
+    "count": "显示 1 / 6 个插件",
+    "view": "grid",
+    "shortcuts": []
+  },
+  {
+    "step": "pin",
+    "visible": [
+      "pkg:dsh-github-auth"
+    ],
+    "count": "显示 1 / 6 个插件",
+    "view": "grid",
+    "shortcuts": [
+      "pkg:dsh-github-auth"
+    ]
+  },
+  {
+    "step": "pinned filter",
+    "visible": [
+      "pkg:dsh-github-auth"
+    ],
+    "count": "显示 1 / 6 个插件",
+    "view": "grid",
+    "shortcuts": [
+      "pkg:dsh-github-auth"
+    ]
+  },
+  {
+    "step": "list view",
+    "visible": [
+      "pkg:dsh-github-auth"
+    ],
+    "count": "显示 1 / 6 个插件",
+    "view": "list",
+    "shortcuts": [
+      "pkg:dsh-github-auth"
+    ]
+  },
+  {
+    "step": "minimal view",
+    "visible": [
+      "pkg:dsh-github-auth"
+    ],
+    "count": "显示 1 / 6 个插件",
+    "view": "minimal",
+    "shortcuts": [
+      "pkg:dsh-github-auth"
+    ]
+  },
+  {
+    "step": "collapse",
+    "groups": [
+      "official",
+      "bundles"
+    ],
+    "shortcutsCollapsed": true
+  },
+  {
+    "step": "pin order",
+    "visible": [
+      "pkg:team",
+      "item:terminal",
+      "pkg:dsh-github-auth",
+      "pkg:dsh-usage-pill",
+      "pkg:broken-plugin",
+      "pkg:empty-description"
+    ],
+    "count": "显示 6 / 6 个插件",
+    "view": "minimal",
+    "shortcuts": [
+      "pkg:dsh-usage-pill",
+      "pkg:dsh-github-auth"
+    ]
+  },
+  {
+    "step": "unpin",
+    "visible": [
+      "pkg:team",
+      "item:terminal",
+      "pkg:dsh-github-auth",
+      "pkg:dsh-usage-pill",
+      "pkg:broken-plugin",
+      "pkg:empty-description"
+    ],
+    "count": "显示 6 / 6 个插件",
+    "view": "minimal",
+    "shortcuts": [
+      "pkg:dsh-github-auth"
+    ]
+  },
+  {
+    "step": "undo",
+    "visible": [
+      "pkg:team",
+      "item:terminal",
+      "pkg:dsh-github-auth",
+      "pkg:dsh-usage-pill",
+      "pkg:broken-plugin",
+      "pkg:empty-description"
+    ],
+    "count": "显示 6 / 6 个插件",
+    "view": "minimal",
+    "shortcuts": [
+      "pkg:dsh-usage-pill",
+      "pkg:dsh-github-auth"
+    ]
+  },
+  {
+    "step": "keyboard",
+    "focusedPackage": "dsh-usage-pill"
+  },
+  {
+    "step": "more menu",
+    "closed": true,
+    "focusedSummary": true
+  },
+  {
+    "step": "preview and issues",
+    "previewPins": 2,
+    "previewSwitches": 2,
+    "previewReadOnly": true,
+    "issueText": "插件加载异常，打开详情查看原因。"
+  },
+  {
+    "step": "dispose",
+    "slots": 0,
+    "injectedElements": 0
+  }
+]

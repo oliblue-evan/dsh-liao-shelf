@@ -1,42 +1,83 @@
-# dsh-plugin-shelf
+# Plugin Shelf · dsh-plugin-shelf
 
-Lays the official DeepSeek Harness **Plugins** settings page out as a card grid, with a filter box. Appearance only — install, enable/disable and uninstall all stay native; this plugin never intercepts actions.
+Search, filter and pin everyday plugins in DeepSeek Harness.
 
 [简体中文](README.md)
 
-## What it does
+## Features
 
-- Turns the single-column plugin list into a responsive card grid (min column width configurable).
-- Adds an accent stripe on community cards (those with an Uninstall button), so they read differently from the official group.
-- Adds a filter input to the toolbar; matches name and description, hides nothing else.
-- Settings → Plugin Shelf: card view, column width, accent stripe, search box — live toggles.
+- Compact settings with a live preview beside common controls. Browsing preferences, pin management and backups are collapsed by default. Sorting uses the same custom menu across platforms.
+- Toggle descriptions, versions and installation dates separately. Minimal view keeps only the logo, name, pin and native switch.
+- Optionally remember search and filters when reopening the plugin list.
+- Export/import appearance, pin order and collapsed groups as JSON. Preview before merging or replacing; undo an import. No plugin credentials or configuration are included.
 
-## What it does not do
+- Fold official, installed and pinned groups independently; persist fold state. Search temporarily expands matching groups.
+- Minimal layout shows only the logo, name, pin control and native switch.
+- Current package versions and estimated installation dates; newest/oldest sorting keeps unknown dates last and pins first.
 
-- It never replaces the official page, moves DOM nodes, or intercepts clicks.
-- No install / toggle / uninstall logic — everything goes through the host.
-- If a host upgrade renames internal classes, the page simply falls back to the native list. No errors, no hangs.
+- Search names, descriptions and package IDs. All whitespace-separated keywords must match; case and full-width characters are normalized.
+- Filter all, installed, official, enabled, disabled, pinned and problematic plugins, with accurate counts across groups.
+- Stable package/item IDs preserve pins across renaming and language changes. Pinned shortcuts open the native configuration page.
+- Grid/list/minimal layouts, three density presets and original/name/enabled-first sorting.
+- Two-line descriptions and legible status labels.
+- Settings in the plugin detail page: live previews, pin management, confirmed clearing and appearance reset. Resetting appearance preserves pins.
+- Follow the active DSH language (Chinese/English).
 
-## Install
+Installation, switches, removal and configuration remain native DSH actions. A read-only local metadata endpoint uses Node built-ins. No third-party runtime dependencies or automatic package-manager operations. Web and desktop only; TUI is unaffected.
 
-```bash
-dsh plugin --profile desktop add dsh-plugin-shelf
+## Installation
+
+Install through the plugin market, or the published GitHub source:
+
+```sh
+dsh plugin --profile desktop add github:oliblue-evan/dsh-plugin-shelf
 ```
 
-Fully quit and reopen DeepSeek Harness afterwards.
+GitHub installs receive pushed changes only, not an unpublished local working tree.
 
-## How it works
+## Preferences and compatibility
 
-The official page is rendered by `@deepseek-ai/dsh-client-ui-plugin-manager`; the card list is `ul[class*="_cards"] > li`. This plugin injects scoped CSS to grid that list and marks rows with attributes (`data-dps-on / data-dps-community / data-dps-off`) for the stripe and the filter. All selectors use substring matching, never the build-hash prefix.
+Preferences are local to the browser: `liao-plugin-shelf.config` and `liao-plugin-shelf.pins`. Existing configuration is read automatically; legacy name-based pins migrate when matching cards appear. Unmatched pins are retained for manual removal. Legacy keys remain for rollback, but new changes are not written back to them. Storage failures show a notice; session-only changes remain usable.
 
-Configuration lives in browser `localStorage` (key `liao-plugin-shelf.config`).
+Verified desktop host: **DSH 0.2.0-rc.2**. The adapter uses semantic `data-plugin-*` attributes rather than CSS hashes or translated action labels. It changes CSS ordering without moving native React nodes, and cleans up elements, observers, events and slot registrations on disposal. Unrecognized host views stay native.
 
-## Compatibility
+Built-in configuration items with no switch are labelled built-in, rather than being counted as enabled plugins.
 
-| DSH | Status |
-|---|---|
-| 0.2.0-rc.2 | verified |
+## Development
+
+Node.js 24 and pnpm:
+
+```sh
+pnpm install --ignore-scripts
+pnpm check
+pnpm test
+pnpm pack:check
+```
+
+Tests cover filtering, ID migration, native navigation, settings, storage failure and disposal. The host-loader scenario reads the exact 0.2.0-rc.2 desktop app archive, uses its real `ClientModuleSystem` and compares reviewed interaction records. Set `DSH_ASAR` on another platform; this check explicitly skips when the archive is unavailable.
+
+DOM fixtures do not replace real GUI checks, or prove other host versions/browser engines. An isolated-profile cold start and consumer smoke test remain release gates.
 
 ## License
 
 MIT
+
+## Local installation information
+
+Dates estimate the filesystem creation time of the current profile directory/link, not the historical first installation. Updating, reinstalling, copying or restoring backups can change them. Missing dates remain unknown. Built-in configuration items have no install date. The GET-only `/api/plugin-shelf/metadata` endpoint returns no filesystem paths. Restart DSH when upgrading from 0.3.x to activate the new server entry.
+
+Shelf only reads locally installed versions and dates for display and sorting. It does not check remote releases or require the Market service.
+
+## 0.5.0 interaction refinements
+
+The toolbar combines fold actions and puts infrequent operations under More, including a shortcut to the existing plugin detail settings. Tab and Shift+Tab follow visual card order, skip hidden groups and can leave the page. More closes with Escape. Pins can move up or down; shortcuts and pinned cards share their order. Unpinning can be undone for eight seconds.
+
+The display toggle is called Enhance plugin list, distinct from the native plugin enable switch.
+
+## 0.5.1 toolbar proportions
+
+Toolbar controls share a 36px height, 13px text and 8px corners. View buttons are 30px inside the 36px group, filters are 28px and menu rows are 36px. Icons are 16px, with 8px spacing within groups and 16px between groups. More uses a shorter label.
+
+## 0.5.2 consistency and recovery
+
+Appearance and pin writes track failures independently. Retry saving persists only pending current values; cross-window changes do not overwrite those values. Minimal density now changes actual spacing and height. The preview shares card sizing and includes read-only pin and switch controls. Minimal cards and shortcuts retain a small accessible issue badge until the plugin recovers.

@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Plugin Shelf",
-    "description": "Card grid layout for the official plugins page."
+    "description": "Enhance the native plugins page: search, filters, folding, pins, minimal layouts and installation-date sorting."
   }
 }
