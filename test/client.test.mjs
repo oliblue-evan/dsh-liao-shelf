@@ -199,7 +199,14 @@ test('侧栏更多仿照豆包：悬停浮层、点击内联展开/收起，保�
     assert.ok(currentTrigger, '没有收纳项时仍保留“更多”作为收纳目标');
     const drag = (target, type, clientY = 0) => { const event = new f.window.MouseEvent(type, { bubbles:true, cancelable:true, clientY }); Object.defineProperty(event, 'dataTransfer', { value:transfer }); target.dispatchEvent(event); };
     await act(async () => { drag(native[3], 'dragstart'); });
-    assert.equal(transfer.preview, native[3], '浏览器拖动预览直接取自当前可见行，避免离屏克隆变透明');
+    assert.equal(transfer.preview.tagName, 'CANVAS', '原生半透明拖影由透明画布替代');
+    assert.equal(transfer.preview.width, 1);
+    assert.equal(native[3].getAttribute('data-dps-sidebar-dragging'), 'true', '原位置标记为拖动态');
+    assert.equal(f.window.getComputedStyle(native[3]).opacity, '0.35', '原位置入口变灰');
+    const dragPreview = f.document.querySelector('.dps-sidebar-drag-preview');
+    assert.ok(dragPreview, '跟随鼠标的实色预览已创建');
+    assert.equal(f.window.getComputedStyle(dragPreview).opacity, '1', '拖动预览保持实色');
+    assert.equal(f.window.getComputedStyle(dragPreview).pointerEvents, 'none');
     assert.equal(f.document.querySelector('[data-dps-more-dropzone]').hidden, false, '拖动时在侧栏底部显示虚线收纳目标');
     await act(async () => { drag(currentTrigger, 'dragover'); });
     assert.equal(currentTrigger.getAttribute('data-dps-drop-target'), 'true', '拖到“更多”时目标清晰高亮');
@@ -219,6 +226,7 @@ test('侧栏更多仿照豆包：悬停浮层、点击内联展开/收起，保�
     assert.equal(cancelSource.hasAttribute('data-dps-sidebar-dragging'), false, '拖动时窗口失焦会清除拖动态');
     assert.equal(cancelTarget.hasAttribute('data-dps-drop-before'), false, '拖动取消会清除插入线高亮');
     assert.equal(f.document.querySelector('[data-dps-more-dropzone]').hidden, true, '拖动取消会收起临时收纳提示');
+    assert.equal(f.document.querySelector('.dps-sidebar-drag-preview'), null, '拖动结束时清理实色预览');
     await f.dispose();
     assert.ok(native.every((node) => node.isConnected)); assert.ok(native.every((node) => !node.hasAttribute('data-dps-sidebar-entry') && !node.hasAttribute('data-dps-sidebar-overflow')));
     assert.ok(native.every((node) => !node.hasAttribute('draggable')));
