@@ -10,7 +10,7 @@ Search, filter and pin everyday plugins in DeepSeek Harness.
 - Toggle descriptions, versions and installation dates separately. Minimal view keeps only the logo, name, pin and native switch.
 - Optionally remember search and filters when reopening the plugin list.
 - Export/import appearance, sidebar placement, pin order and collapsed groups as JSON. Preview before merging or replacing; undo an import. No plugin credentials or configuration are included.
-- Organize only global entries with a known third-party registrant: keep them in the sidebar or move them into More, and change their order. DSH built-ins stay in place.
+- Organize global sidebar entries: every entry except Plugins can stay in the sidebar or move into More, and their order can be changed.
 
 - Fold official, installed and pinned groups independently; persist fold state. Search temporarily expands matching groups.
 - Minimal layout shows only the logo, name, pin control and native switch.

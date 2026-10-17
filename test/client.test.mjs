@@ -122,9 +122,9 @@ test('侧栏更多仿照豆包：悬停浮层、点击内联展开/收起，保�
     const selectNative = (selected) => { native.forEach((button) => { button.removeAttribute('aria-current'); button.classList.remove('active'); }); selected.setAttribute('aria-current', 'page'); selected.classList.add('active'); };
     native[3].addEventListener('click', () => { clicked.one++; selectNative(native[3]); }); native[1].addEventListener('click', () => { clicked.two++; selectNative(native[1]); }); native[0].addEventListener('click', () => clicked.core++);
     await f.flush();
-    assert.equal(f.document.querySelectorAll('nav > button[data-dps-sidebar-entry]').length, 2);
-    assert.equal(native[0].hasAttribute('data-dps-sidebar-overflow'), false, '宿主内置入口保持原位');
-    assert.equal(native[2].hasAttribute('data-dps-sidebar-overflow'), false, '同名的宿主入口也保持原位');
+    assert.equal(f.document.querySelectorAll('nav > button[data-dps-sidebar-entry]').length, 4, '除插件管理入口外，其他有 ID 的侧栏入口都纳入管理');
+    assert.equal(native[0].hasAttribute('data-dps-sidebar-overflow'), false, '插件管理入口固定留在更多之外');
+    assert.equal(native[2].hasAttribute('data-dps-sidebar-overflow'), false, '同名入口未收纳时仍保持原位');
     assert.equal(native[3].getAttribute('data-dps-sidebar-overflow'), 'true');
     assert.equal(native[3].style.getPropertyValue('display'), 'none', '收进更多时直接隐藏原生行，不依赖宿主保留插件样式表');
     assert.equal(native[3].style.getPropertyPriority('display'), 'important');
@@ -158,7 +158,8 @@ test('侧栏更多仿照豆包：悬停浮层、点击内联展开/收起，保�
     assert.equal(f.document.querySelectorAll('.dps-sidebar-menu button').length, 2);
     assert.equal(f.document.querySelector('.dps-sidebar-menu').hidden, false, '点击后在侧栏原位展开');
     const sidebarCss = [...f.document.querySelectorAll('style[data-dps-style]')].map((style) => style.textContent).join('\n');
-    assert.match(sidebarCss, /\.dps-sidebar-menu\s*\{[^}]*gap:8px/, '展开列表使用均匀的原生行间距');
+    assert.match(sidebarCss, /\.dps-sidebar-menu\s*\{[^}]*gap:4px/, '内联展开与原生侧栏保持一致的行间距');
+    assert.match(sidebarCss, /\.dps-sidebar-popover\s*\{[^}]*gap:4px/, '收起态浮层为每个入口保留清晰的行间隔');
     assert.match(sidebarCss, /\.dps-sidebar-menu \.dps-sidebar-item:hover/, '展开列表中鼠标悬停仍有高亮反馈');
     assert.ok([...f.document.querySelectorAll('.dps-sidebar-menu [data-dps-sidebar-entry]')].every((item) => item.style.display !== 'none'), '内联展开时收纳行保持可见');
     assert.equal(trigger.textContent.trim(), '收起');
@@ -187,7 +188,7 @@ test('侧栏更多仿照豆包：悬停浮层、点击内联展开/收起，保�
     assert.equal(f.document.querySelector('.dps-sidebar-popover [data-dps-sidebar-entry="third-two"]').getAttribute('data-dps-selected'), 'false', '切换页面后浮框勾选同步清除');
     await f.settings();
     const sidebarSettings = [...f.document.querySelectorAll('.dps-settings details')].find((node) => node.querySelector('summary')?.textContent.includes('侧栏入口'));
-    assert.equal(sidebarSettings.querySelectorAll('[role="switch"]').length, 2);
+    assert.equal(sidebarSettings.querySelectorAll('[role="switch"]').length, 4);
     const overflowSwitch = f.document.querySelector('[aria-label="收进更多 外部入口一"]');
     assert.equal(overflowSwitch.getAttribute('aria-checked'), 'true', '开关开启准确表示该入口已收进更多');
     await act(async () => overflowSwitch.click()); await f.flush();
@@ -250,6 +251,37 @@ test('侧栏入口支持快捷键和自定义网页链接', async () => {
     await act(async()=>f.document.body.dispatchEvent(new f.window.KeyboardEvent('keydown',{key:'l',altKey:true,metaKey:true,bubbles:true,cancelable:true})));
     assert.equal(opened.at(-1).url,'https://example.com/docs','自定义链接快捷键打开指定网页');
     assert.equal(opened.at(-1).target,'_blank');
+  });
+});
+
+test('除插件管理入口外，DSH 内置和扩展侧栏入口都可收进更多', async () => {
+  const sidebarEntries = [
+    { options:{id:'plugins',order:0,label:'插件'},registrant:'@deepseek-ai/dsh-client-ui-plugin-manager' },
+    { options:{id:'skills',order:10,label:'技能中心'},registrant:'@deepseek-ai/dsh-client-ui-skill-explorer' },
+    { options:{id:'context',order:20,label:'上下文洞察'},registrant:'@deepseek-ai/dsh-context' },
+    { options:{id:'schedule',order:30,label:'自动化任务'},registrant:'@deepseek-ai/dsh-client-ui-automation' },
+    { options:{id:'ssh',order:40,label:'SSH'},registrant:'@deepseek-ai/dsh-ssh' },
+    { options:{id:'ig5',order:50,label:'IG5 逆向工作台'},registrant:'@deepseek-ai/dsh-client-ui-ig5' },
+    { options:{id:'plugin-market',order:60,label:'插件市场'},registrant:'@deepseek-ai/dsh-market' }
+  ];
+  await using({ sidebarEntries, config:{sidebarMore:['skills','context','schedule','ssh','ig5','plugin-market']} }, async (f) => {
+    const home = f.document.querySelector('nav > button[aria-label="插件"]');
+    assert.ok(home, '插件管理入口仍存在');
+    assert.equal(home.hasAttribute('data-dps-sidebar-entry'), false, '插件管理入口不可收入更多');
+    assert.notEqual(home.style.getPropertyValue('display'), 'none');
+    for (const label of ['技能中心','上下文洞察','自动化任务','SSH','IG5 逆向工作台','插件市场']) {
+      const entry = f.document.querySelector(`nav > button[aria-label="${label}"]`);
+      assert.ok(entry, `${label} 入口存在`);
+      assert.equal(entry.getAttribute('data-dps-sidebar-overflow'), 'true', `${label} 可收入更多`);
+      assert.equal(entry.style.getPropertyValue('display'), 'none');
+    }
+    await f.click('[data-dps-more-trigger]');
+    assert.deepEqual([...f.document.querySelectorAll('.dps-sidebar-menu button')].map((button) => button.getAttribute('aria-label')), ['技能中心','上下文洞察','自动化任务','SSH','IG5 逆向工作台','插件市场']);
+    await f.settings();
+    assert.equal(f.document.querySelectorAll('.dps-settings [aria-label^="收进更多 "]').length, 6, '所有非插件管理入口均提供收纳开关');
+    const settingsRows = [...f.document.querySelectorAll('.dps-settings-section .dps-pins-list li')].slice(-6);
+    const finalMoveDown = [...settingsRows.at(-1).querySelectorAll('button')].find((button) => button.getAttribute('aria-label')?.startsWith('下移 '));
+    assert.equal(finalMoveDown.disabled, true, '最后一个可管理入口不能继续下移');
   });
 });
 
