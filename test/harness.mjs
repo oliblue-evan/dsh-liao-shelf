@@ -19,9 +19,8 @@ export function readAsar(path, file) {
   const offset = 8 + bytes.readUInt32LE(4) + Number(entry.offset);
   return bytes.subarray(offset, offset + entry.size).toString();
 }
-export async function fixture({ config, pins, legacyPins, legacyConfig, loaderSource, clientSource, fetcher, initialMetadata = [], sidebarEntries = [] } = {}) {
-  const sidebarHTML = sidebarEntries.length ? `<nav aria-label="全局面板">${sidebarEntries.slice().sort((a, b) => (a.options.order || 0) - (b.options.order || 0)).map((entry) => `<button aria-label="${entry.options.label}">${entry.options.icon === 'masked' ? '<svg><defs><mask id="native-icon-mask"><rect width="16" height="16"></rect></mask></defs><path mask="url(#native-icon-mask)" d="M0 0"></path></svg>' : '<svg><path d="M0 0"></path></svg>'}<span>${entry.options.label}</span></button>`).join('')}</nav>` : '';
-  const dom = new JSDOM(`<html lang="zh"><head></head><body>${sidebarHTML}${pageHTML}<main id="settings"></main><aside id="unrelated"><ul><li>其他页面</li></ul></aside></body></html>`, { url: 'http://localhost', pretendToBeVisual: true });
+export async function fixture({ config, pins, legacyPins, legacyConfig, loaderSource, clientSource, fetcher, initialMetadata = [] } = {}) {
+  const dom = new JSDOM(`<html lang="zh"><head></head><body>${pageHTML}<main id="settings"></main><aside id="unrelated"><ul><li>其他页面</li></ul></aside></body></html>`, { url: 'http://localhost', pretendToBeVisual: true });
   const { window } = dom, { document } = window;
   const prior = {};
   for (const key of ['window', 'document', 'IS_REACT_ACT_ENVIRONMENT']) {
@@ -62,7 +61,7 @@ export async function fixture({ config, pins, legacyPins, legacyConfig, loaderSo
   const context = {
     effect,
     locale: { getSnapshot: () => ({ active: language }), subscribe: (fn) => { localeListeners.add(fn); return () => localeListeners.delete(fn); }, register: () => () => {} },
-    slots: { inject: (_slot, fn) => fn(), register: (options, Component) => { const key = options.name + ':' + (options.key || options.id); slots.set(key, Component); return () => slots.delete(key); }, entriesOfSlot: (name) => name === 'sidebar.panellist' ? sidebarEntries : [], subscribe: (name, fn) => { if (name === 'sidebar.panellist') return () => {}; return () => {}; } },
+    slots: { inject: (_slot, fn) => fn(), register: (options, Component) => { const key = options.name + ':' + (options.key || options.id); slots.set(key, Component); return () => slots.delete(key); }, entriesOfSlot: () => [], subscribe: () => () => {} },
   };
   function start() { plugin.apply(context); }
   async function flush() {
