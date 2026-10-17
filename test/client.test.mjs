@@ -157,6 +157,7 @@ test('侧栏更多仿照豆包：悬停浮层、点击内联展开/收起，保�
     await f.click('[data-dps-more-trigger]');
     assert.equal(f.document.querySelectorAll('.dps-sidebar-menu button').length, 2);
     assert.equal(f.document.querySelector('.dps-sidebar-menu').hidden, false, '点击后在侧栏原位展开');
+    assert.equal(f.document.querySelector('[data-dps-more-dropzone]').hidden, true, '已有收纳入口时不在展开列表底部重复显示投放区');
     const sidebarCss = [...f.document.querySelectorAll('style[data-dps-style]')].map((style) => style.textContent).join('\n');
     assert.match(sidebarCss, /\.dps-sidebar-menu\s*\{[^}]*gap:4px/, '内联展开与原生侧栏保持一致的行间距');
     assert.match(sidebarCss, /\.dps-sidebar-popover\s*\{[^}]*gap:4px/, '收起态浮层为每个入口保留清晰的行间隔');
@@ -223,6 +224,18 @@ test('侧栏更多仿照豆包：悬停浮层、点击内联展开/收起，保�
     assert.ok(native.every((node) => !node.hasAttribute('draggable')));
     assert.equal(native[3].style.getPropertyValue('display'), '', '停用插件后恢复原生入口的显示样式');
     assert.equal(native[1].style.order, ''); assert.equal(f.document.querySelector('[data-dps-more-trigger]'), null);
+  });
+});
+
+test('「更多」为空时，展开列表保留首次收纳投放区', async () => {
+  const sidebarEntries = [
+    { options:{id:'plugins',order:0,label:'插件'},registrant:'@deepseek-ai/dsh-client-ui-plugin-manager' },
+    { options:{id:'skills',order:10,label:'技能中心'},registrant:'@deepseek-ai/dsh-client-ui-skill-explorer' }
+  ];
+  await using({ sidebarEntries }, async (f) => {
+    await f.click('[data-dps-more-trigger]');
+    assert.equal(f.document.querySelector('.dps-sidebar-menu').hidden, false);
+    assert.equal(f.document.querySelector('.dps-sidebar-menu [data-dps-more-dropzone]').hidden, false, '没有收纳入口时保留投放区，方便拖入第一项');
   });
 });
 
