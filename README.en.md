@@ -39,7 +39,7 @@ GitHub installs receive pushed changes only, not an unpublished local working tr
 
 Preferences are local to the browser: `liao-plugin-shelf.config` and `liao-plugin-shelf.pins`. Existing configuration is read automatically; legacy name-based pins migrate when matching cards appear. Unmatched pins are retained for manual removal. Legacy keys remain for rollback, but new changes are not written back to them. Storage failures show a notice; session-only changes remain usable.
 
-Verified desktop host: **DSH 0.2.0-rc.2**. The adapter uses semantic `data-plugin-*` attributes rather than CSS hashes or translated action labels. It changes CSS ordering without moving native React nodes, and cleans up elements, observers, events and slot registrations on disposal. Unrecognized host views stay native.
+Current development target: **DSH 0.2.1-rc.2 Desktop**. The adapter uses semantic `data-plugin-*` attributes rather than CSS hashes or translated action labels. The new `basic`, `extensions` and `more` groups count as Official; `bundles` count as Installed. The legacy `official` group remains supported. It changes CSS ordering without moving native React nodes, and cleans up elements, observers, events and slot registrations on disposal. Unrecognized host views stay native.
 
 Built-in configuration items with no switch are labelled built-in, rather than being counted as enabled plugins.
 
@@ -54,7 +54,7 @@ pnpm test
 pnpm pack:check
 ```
 
-Tests cover filtering, ID migration, native navigation, settings, storage failure and disposal. The host-loader scenario reads the exact 0.2.0-rc.2 desktop app archive, uses its real `ClientModuleSystem` and compares reviewed interaction records. Set `DSH_ASAR` on another platform; this check explicitly skips when the archive is unavailable.
+Tests cover filtering, ID migration, native navigation, settings, storage failure and disposal. The host-loader scenario reads the desktop app archive, uses its real `ClientModuleSystem` and compares reviewed interaction records. Set `DSH_ASAR` on another platform; this check explicitly skips when the archive is unavailable.
 
 DOM fixtures do not replace real GUI checks, or prove other host versions/browser engines. An isolated-profile cold start and consumer smoke test remain release gates.
 

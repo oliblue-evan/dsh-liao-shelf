@@ -34,10 +34,10 @@ test('动态加载并移除其他插件时，真实宿主不得认领或删除�
     assert.equal(style.isConnected, false, 'Shelf unload must still remove its own stylesheet');
   } finally { await f.close(); }
 });
-test('DSH 0.2.0-rc.2 实际模块加载器加载发布入口；交互场景记录', { skip: available ? false : 'Set DSH_ASAR to the exact 0.2.0-rc.2 desktop app.asar' }, async () => {
+test('DSH 0.2.1-rc.2 实际模块加载器加载发布入口；交互场景记录', { skip: available ? false : 'Set DSH_ASAR to the exact 0.2.1-rc.2 desktop app.asar' }, async () => {
   const root = 'dsh/node_modules/@deepseek-ai/';
   const version = JSON.parse(readAsar(asar, root + 'dsh-client-ui-plugin-manager/package.json')).version;
-  assert.equal(version, '0.2.0-rc.2', 'Target drift requires a new host-contract review');
+  assert.equal(version, '0.2.1-rc.2', 'Target drift requires a new host-contract review');
   const f = await fixture({ loaderSource: readAsar(asar, root + 'dsh-client-modules/lib/client.js') });
   const transcript = [];
   function record(step) {
