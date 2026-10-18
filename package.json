@@ -1,5 +1,5 @@
 {
-  "name": "dsh-plugin-shelf",
+  "name": "dsh-liao-shelf",
   "version": "0.7.0",
   "description": "插件书架：优化 DSH 官方插件页的搜索、筛选、折叠、置顶、视图与安装信息。Plugin Shelf: visual organization for the native DSH plugins page.",
   "license": "MIT",
@@ -41,7 +41,7 @@
   "author": "liao",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oliblue-evan/dsh-plugin-shelf.git"
+    "url": "git+https://github.com/oliblue-evan/dsh-liao-shelf.git"
   },
   "publishConfig": {
     "access": "public"

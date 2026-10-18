@@ -5,7 +5,7 @@
     "namespace": "liao",
     "name": "plugin-shelf",
     "coordinate": "liao/plugin-shelf",
-    "packageName": "dsh-plugin-shelf"
+    "packageName": "dsh-liao-shelf"
   },
   "names": {
     "pluginNames": [
@@ -13,7 +13,7 @@
     ],
     "loaderIds": [
       "liao-plugin-shelf",
-      "dsh-plugin-shelf"
+      "dsh-liao-shelf"
     ],
     "services": [],
     "tools": [],

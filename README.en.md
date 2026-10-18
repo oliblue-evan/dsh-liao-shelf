@@ -1,4 +1,4 @@
-# Plugin Shelf · dsh-plugin-shelf
+# Plugin Shelf · dsh-liao-shelf
 
 Search, filter and pin everyday plugins in DeepSeek Harness.
 
@@ -30,7 +30,7 @@ Installation, switches, removal and configuration remain native DSH actions. A r
 Install through the plugin market, or the published GitHub source:
 
 ```sh
-dsh plugin --profile desktop add github:oliblue-evan/dsh-plugin-shelf
+dsh plugin --profile desktop add github:oliblue-evan/dsh-liao-shelf
 ```
 
 GitHub installs receive pushed changes only, not an unpublished local working tree.

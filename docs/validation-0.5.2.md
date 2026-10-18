@@ -1,6 +1,6 @@
 # 插件书架 0.5.2 验证记录
 
-范围：仅 dsh-plugin-shelf；没有修改 DSH 本体或用户 Profile 配置，没有推送或发布。
+范围：仅 dsh-liao-shelf；没有修改 DSH 本体或用户 Profile 配置，没有推送或发布。
 
 ## 改动
 

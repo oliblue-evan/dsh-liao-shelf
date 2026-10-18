@@ -74,7 +74,7 @@ test('页面切换和宿主重渲染仍可置顶；观察器不会持续自触�
 }));
 
 test('设置预览即时更新；恢复默认保留收藏；清空收藏先确认', async () => using({ pins: ['pkg:dsh-github-auth'] }, async (f) => {
-  assert.deepEqual([...f.slots.keys()], ['plugins.bundle.config:dsh-plugin-shelf'], '只在插件详情注册设置');
+  assert.deepEqual([...f.slots.keys()], ['plugins.bundle.config:dsh-liao-shelf'], '只在插件详情注册设置');
   await f.settings();
   const clickText = async (text) => { const node = [...f.document.querySelectorAll('.dps-settings button')].find((el) => el.textContent === text); assert.ok(node, text); await act(async () => node.click()); await f.flush(); };
   await clickText('紧凑'); assert.equal(f.page().getAttribute('data-dps-density'), 'compact'); assert.equal(f.document.querySelector('.dps-preview').getAttribute('data-density'), 'compact');
@@ -159,7 +159,7 @@ test('极简视图隐藏描述、状态、日期和标签，保留原生名称�
 
 test('书架仅读取本地安装信息，无更新入口或市场请求', async () => using({ fetcher: async (path, options) => {
   assert.equal(path, '/api/plugin-shelf/metadata'); assert.equal(options.method, 'GET');
-  return { ok: true, json: async () => ({ schema: 'dsh-plugin-shelf/metadata/v1', packages: [] }) };
+  return { ok: true, json: async () => ({ schema: 'dsh-liao-shelf/metadata/v1', packages: [] }) };
 } }, async (f) => {
   assert.equal(f.document.querySelectorAll('[data-dps-action=check-updates],[data-filter=updates],.dps-update-tag,.dps-update-note').length, 0);
   await f.search('github'); await f.search('');
@@ -173,7 +173,7 @@ test('书架仅读取本地安装信息，无更新入口或市场请求', async
 
 test('本地安装信息可刷新，故障提示和重试仍独立可用', async () => {
   let version = '1.0.0', fail = false;
-  await using({ fetcher: async () => fail ? { ok: false, status: 503 } : { ok: true, json: async () => ({ schema: 'dsh-plugin-shelf/metadata/v1', packages: [{ name: 'dsh-github-auth', version, installedAt: 1700000000000 }] }) } }, async (f) => {
+  await using({ fetcher: async () => fail ? { ok: false, status: 503 } : { ok: true, json: async () => ({ schema: 'dsh-liao-shelf/metadata/v1', packages: [{ name: 'dsh-github-auth', version, installedAt: 1700000000000 }] }) } }, async (f) => {
     version = '2.0.0'; f.card('dsh-github-auth').querySelector('[aria-describedby]').textContent = 'GitHub 授权新版'; await f.flush();
     assert.match(f.card('dsh-github-auth').querySelector('.dps-metadata').textContent, /v2.0.0/);
     fail = true; await f.click('[data-dps-action=metadata]');
@@ -189,7 +189,7 @@ test('停用中断在途本地信息请求，迟到响应不恢复已清理界�
   let finish;
   await using({ fetcher: async () => new Promise((resolve) => { finish = resolve; }) }, async (f) => {
     const signal = f.requests[0].options.signal; await f.dispose(); assert.equal(signal.aborted, true);
-    finish({ ok: true, json: async () => ({ schema: 'dsh-plugin-shelf/metadata/v1', packages: [] }) }); await f.flush();
+    finish({ ok: true, json: async () => ({ schema: 'dsh-liao-shelf/metadata/v1', packages: [] }) }); await f.flush();
     assert.equal(f.document.querySelectorAll('.dps-tools,[data-dps-style],.dps-collapse,.dps-footer').length, 0);
   });
 });
@@ -241,7 +241,7 @@ test('Tab 按视觉排序导航，跳过折叠与隐藏项，Shift+Tab 可返回
 
 test('离开页面期间更新同名插件，重新进入后读取新版本', async () => {
   let version = '1.0.0';
-  await using({ fetcher: async () => ({ ok: true, json: async () => ({ schema: 'dsh-plugin-shelf/metadata/v1', packages: [{ name: 'dsh-github-auth', version, installedAt: 1700000000000 }] }) }) }, async (f) => {
+  await using({ fetcher: async () => ({ ok: true, json: async () => ({ schema: 'dsh-liao-shelf/metadata/v1', packages: [{ name: 'dsh-github-auth', version, installedAt: 1700000000000 }] }) }) }, async (f) => {
     f.page().remove(); await f.flush(); version = '2.0.0';
     f.document.body.insertAdjacentHTML('afterbegin', pageHTML); await f.flush();
     assert.match(f.card('dsh-github-auth').querySelector('.dps-metadata').textContent, /v2.0.0/);
@@ -321,10 +321,10 @@ test('备份导入先预览、严格校验、合并保留外观、替换和撤�
   // React DOM in this harness is imported before JSDOM, so use its registered onChange property.
   const change=async raw=>{await act(async()=>{const props=input[Object.keys(input).find(k=>k.startsWith('__reactProps'))];props.onChange({target:{value:raw}});});await f.flush();};
   const clickText=async label=>{const b=[...f.document.querySelectorAll('.dps-settings button')].find(b=>b.textContent===label);assert.ok(b,label);await act(async()=>b.click());await f.flush();};
-  await change(JSON.stringify({schema:'dsh-plugin-shelf/preferences/v1',config:{view:'minimal',collapsed:['bundles']},pins:['pkg:empty-description']}));
+  await change(JSON.stringify({schema:'dsh-liao-shelf/preferences/v1',config:{view:'minimal',collapsed:['bundles']},pins:['pkg:empty-description']}));
   assert.equal(JSON.parse(f.window.localStorage.getItem(pinsKey)).length,1);
   await clickText('合并置顶与折叠'); assert.equal(JSON.parse(f.window.localStorage.getItem(configKey)).view,'list'); assert.equal(JSON.parse(f.window.localStorage.getItem(pinsKey)).length,2);
   await clickText('撤销导入'); assert.deepEqual(JSON.parse(f.window.localStorage.getItem(pinsKey)),['pkg:dsh-github-auth']);
-  await change(JSON.stringify({schema:'dsh-plugin-shelf/preferences/v1',config:{view:'invalid'},pins:[]})); assert.match(f.document.querySelector('.dps-settings').textContent,/备份无效/); assert.equal([...f.document.querySelectorAll('.dps-settings button')].some(b=>b.textContent==='替换全部偏好'),false);
-  await change(JSON.stringify({schema:'dsh-plugin-shelf/preferences/v1',config:{view:'minimal'},pins:[]})); await clickText('替换全部偏好'); assert.equal(JSON.parse(f.window.localStorage.getItem(configKey)).view,'minimal'); await clickText('撤销导入'); assert.equal(JSON.parse(f.window.localStorage.getItem(configKey)).view,'list');
+  await change(JSON.stringify({schema:'dsh-liao-shelf/preferences/v1',config:{view:'invalid'},pins:[]})); assert.match(f.document.querySelector('.dps-settings').textContent,/备份无效/); assert.equal([...f.document.querySelectorAll('.dps-settings button')].some(b=>b.textContent==='替换全部偏好'),false);
+  await change(JSON.stringify({schema:'dsh-liao-shelf/preferences/v1',config:{view:'minimal'},pins:[]})); await clickText('替换全部偏好'); assert.equal(JSON.parse(f.window.localStorage.getItem(configKey)).view,'minimal'); await clickText('撤销导入'); assert.equal(JSON.parse(f.window.localStorage.getItem(configKey)).view,'list');
 }));

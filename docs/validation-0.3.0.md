@@ -4,7 +4,7 @@
 
 ## 来源与范围
 
-- 基线：`560b7f4`，dsh-plugin-shelf 0.2.1；检查时工作区干净。
+- 基线：`560b7f4`，dsh-liao-shelf 0.2.1；检查时工作区干净。
 - 结果：本地工作区 0.3.0。已安装副本通过软链接使用此工作区。
 - 宿主：官方桌面应用 DSH **0.2.0-rc.2**，由本机应用包元数据核对。
 - 只修改插件源码、元数据、文档与开发测试配置，未修改 DSH 源码或 Profile 配置。
@@ -49,4 +49,4 @@ git restore --source=560b7f4 -- lib/client.js package.json dsh-plugin.naming.jso
 
 ## 设置入口调整
 
-按用户要求移除 `settings.section` 注册，只保留 `plugins.bundle.config:dsh-plugin-shelf`。说明和测试同步调整；11/11 测试、语法检查与打包消费检查再次通过。设置测试明确断言只注册插件详情槽位。全局导航的追加 GUI 复查因用户正在操作应用被工具中断，未继续接管；上述首次重做的 GUI 记录是移除入口前的历史证据。
+按用户要求移除 `settings.section` 注册，只保留 `plugins.bundle.config:dsh-liao-shelf`。说明和测试同步调整；11/11 测试、语法检查与打包消费检查再次通过。设置测试明确断言只注册插件详情槽位。全局导航的追加 GUI 复查因用户正在操作应用被工具中断，未继续接管；上述首次重做的 GUI 记录是移除入口前的历史证据。

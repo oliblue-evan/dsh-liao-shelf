@@ -39,7 +39,7 @@ export async function fixture({ config, pins, legacyPins, legacyConfig, loaderSo
     requests.push({ path, options });
     if (fetcher) return fetcher(path, options);
     if (path !== '/api/plugin-shelf/metadata') throw Error('Unexpected external request: ' + path);
-    return { ok: true, status: 200, json: async () => ({ schema: 'dsh-plugin-shelf/metadata/v1', packages: initialMetadata }) };
+    return { ok: true, status: 200, json: async () => ({ schema: 'dsh-liao-shelf/metadata/v1', packages: initialMetadata }) };
   };
   const sandbox = vm.createContext({ window, document, console });
   let entry;
@@ -54,7 +54,7 @@ export async function fixture({ config, pins, legacyPins, legacyConfig, loaderSo
   }
   const source = clientSource || readFileSync(new URL('../lib/client.js', import.meta.url), 'utf8');
   vm.runInContext(source, sandbox);
-  const plugin = modules ? await modules.import('dsh-plugin-shelf') : entry.factory((name) => { if (name !== 'react') throw Error(name); return React; });
+  const plugin = modules ? await modules.import('dsh-liao-shelf') : entry.factory((name) => { if (name !== 'react') throw Error(name); return React; });
   const disposers = [], slots = new Map(), localeListeners = new Set();
   let language = 'zh', root;
   function effect(fn) { const dispose = fn(); if (typeof dispose === 'function') disposers.push(dispose); }
@@ -82,7 +82,7 @@ export async function fixture({ config, pins, legacyPins, legacyConfig, loaderSo
     async click(selector) { const el = document.querySelector(selector); if (!el) throw Error('Missing '+selector); await act(async () => el.click()); await flush(); },
     async search(value) { const input = document.querySelector('.dps-search'); input.value = value; input.dispatchEvent(new window.Event('input', { bubbles: true })); await flush(); },
     async language(value) { language = value; document.documentElement.lang = value; await act(async () => localeListeners.forEach((fn) => fn())); await flush(); },
-    async settings() { root = createRoot(document.querySelector('#settings')); await act(async () => root.render(React.createElement(slots.get('plugins.bundle.config:dsh-plugin-shelf')))); },
+    async settings() { root = createRoot(document.querySelector('#settings')); await act(async () => root.render(React.createElement(slots.get('plugins.bundle.config:dsh-liao-shelf')))); },
     async dispose() { await act(async () => { if (root) { root.unmount(); root = null; } disposers.splice(0).reverse().forEach((fn) => fn()); }); await flush(); },
     async close() { await this.dispose(); dom.window.close(); for (const key of Object.keys(prior)) if (prior[key]) Object.defineProperty(globalThis, key, prior[key]); else delete globalThis[key]; }
   };

@@ -1,4 +1,4 @@
-# 插件书架 · dsh-plugin-shelf
+# 插件书架 · dsh-liao-shelf
 
 为 DeepSeek Harness 的插件页增加搜索、筛选和常用入口，让找到与配置插件更方便。
 
@@ -42,7 +42,7 @@
 通过插件市场，或使用 GitHub 源安装：
 
 ```sh
-dsh plugin --profile desktop add github:oliblue-evan/dsh-plugin-shelf
+dsh plugin --profile desktop add github:oliblue-evan/dsh-liao-shelf
 ```
 
 GitHub 安装获取已推送的版本，本地工作区修改不会自动发布到 GitHub。

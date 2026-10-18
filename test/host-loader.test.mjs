@@ -23,9 +23,9 @@ test('动态加载并移除其他插件时，真实宿主不得认领或删除�
       await f.modules.import(id);
       const claimedBy = style.getAttribute('data-plugin');
       f.modules.updateManifest({ modules: [], plugins: [] }, []);
-      f.modules.prune(['dsh-plugin-shelf']);
+      f.modules.prune(['dsh-liao-shelf']);
       assert.equal(style.isConnected, true, `Foreign module ${id} claimed the shelf style as ${claimedBy}, then removed it`);
-      assert.equal(claimedBy, 'dsh-plugin-shelf');
+      assert.equal(claimedBy, 'dsh-liao-shelf');
       assert.equal(f.document.querySelector(`style[data-plugin="${id}"]`), null);
       await f.flush();
       assert.equal(f.window.getComputedStyle(f.document.querySelector('.dps-tools')).display, 'flex');
@@ -45,7 +45,7 @@ test('DSH 0.2.1-rc.2 实际模块加载器加载发布入口；交互场景记�
       view: f.page().getAttribute('data-dps-view'), shortcuts: [...f.document.querySelectorAll('.dps-shortcuts [data-dps-action=open]')].map((x) => x.getAttribute('data-dps-key')) });
   }
   try {
-    assert.ok(f.modules.loadCache.has('dsh-plugin-shelf'));
+    assert.ok(f.modules.loadCache.has('dsh-liao-shelf'));
     record('open'); await f.search('github'); record('search');
     await f.click('[data-dps-key="pkg:dsh-github-auth"] .dps-pin'); record('pin');
     await f.click('[data-dps-action=clear]'); await f.click('[data-filter=pinned]'); record('pinned filter');

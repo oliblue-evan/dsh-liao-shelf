@@ -14,7 +14,7 @@ body{margin:0;padding:16px;background:#151517;color:#eee;font:14px system-ui}bod
 <script src="react.production.min.js"></script><script src="react-dom.production.min.js"></script><script>
 localStorage.setItem('liao-plugin-shelf.config',JSON.stringify({view:'minimal',density:'compact'}));localStorage.setItem('liao-plugin-shelf.pins','[]');
 window.__ModuleLoader__={load(entry){window.shelf=entry.factory(()=>React)}};
-window.fetch=async()=>({ok:true,json:async()=>({schema:'dsh-plugin-shelf/metadata/v1',packages:[]})});
+window.fetch=async()=>({ok:true,json:async()=>({schema:'dsh-liao-shelf/metadata/v1',packages:[]})});
 </script><script src="client.js"></script><script>
 let language='en';const listeners=new Set(), effects=[], root=ReactDOM.createRoot(document.getElementById('settings'));
 shelf.apply({effect(fn){const d=fn();if(typeof d==='function')effects.push(d)},locale:{getSnapshot:()=>({active:language}),subscribe(fn){listeners.add(fn);return()=>listeners.delete(fn)},register:()=>()=>{}},slots:{inject:(_,fn)=>fn(),register(o,Component){root.render(React.createElement(Component));return()=>root.unmount()}}});
