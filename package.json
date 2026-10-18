@@ -1,6 +1,6 @@
 {
   "name": "dsh-liao-shelf",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "插件书架：优化 DSH 官方插件页的搜索、筛选、折叠、置顶、视图与安装信息。Plugin Shelf: visual organization for the native DSH plugins page.",
   "license": "MIT",
   "type": "module",
@@ -36,6 +36,7 @@
     "卡片"
   ],
   "engines": {
+    "dsh": ">=0.2.0-rc.2 <0.3.0-0",
     "node": ">=18"
   },
   "author": "liao",
@@ -75,6 +76,7 @@
     }
   },
   "devDependencies": {
+    "@deepseek-ai/dsh-client-locale": ">=0.1.6-alpha.2 <0.3.0-0",
     "jsdom": "30.1.2",
     "react": "18.3.1",
     "react-dom": "18.3.1"

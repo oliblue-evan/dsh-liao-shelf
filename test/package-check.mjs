@@ -18,7 +18,7 @@ try {
   assert.deepEqual(entries, expected, 'Only reviewed runtime files and documentation belong in the artifact');
   const read = (file) => execFileSync('tar', ['-xOf', archive, 'package/' + file], { encoding: 'utf8' });
   const manifest = JSON.parse(read('package.json'));
-  assert.equal(manifest.version, '0.7.0');
+  assert.equal(manifest.version, '0.7.1');
   assert.doesNotMatch(read('lib/client.js'), /dsh-market|checkUpdates|dps-update-tag/, 'The shipped client must not contain update integration');
   execFileSync('tar', ['-xzf', archive, '-C', dir]);
   const entry = await import(pathToFileURL(join(dir, 'package/lib/index.js')).href);
