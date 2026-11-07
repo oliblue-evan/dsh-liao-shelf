@@ -11,6 +11,14 @@ export function card(id, title, description, status, builtin = false) {
 }
 export const pageHTML = `<section data-plugin-panel><header><h1>插件</h1><div><button>刷新</button><button>添加插件</button></div></header><section data-plugin-group="official"><div><h3>官方</h3><span data-plugin-count="2">2</span></div><ul>${card('team', '智能体团队', '团队工具', 'running')}${card('terminal', '终端', '终端设置', null, true)}</ul></section><section data-plugin-group="bundles"><div><h3>已安装</h3><span data-plugin-count="4">4</span></div><ul>${card('dsh-github-auth', 'GitHub 授权', '管理账号权限', 'running')}${card('dsh-usage-pill', '用量与余额', '费用与 token 统计', 'disabled')}${card('broken-plugin', '异常插件', '启动失败', 'problem')}${card('empty-description', '没有描述', null, 'running')}</ul></section></section>`;
 
+// DSH 0.2.2 moved the page head: [data-plugin-panel] > [data-plugin-body] >
+// [data-plugin-bar] > header, and a direct-child <header> survives only in the
+// "More" view. Derived from pageHTML so both shells keep the exact same cards.
+export const pageHTMLV022 = pageHTML
+  .replace('<section data-plugin-panel><header><h1>插件</h1><div><button>刷新</button><button>添加插件</button></div></header>',
+    '<section data-plugin-panel><div data-plugin-body="true"><div data-plugin-bar="true"><header class="pageHead"><div class="pageHeading"><h1 data-plugin-header-part="title">插件</h1><div data-plugin-header-part="intro"><span>介绍</span></div></div></header></div>')
+  .replace(/<\/section>$/, '</div></section>');
+
 // Use the exact packaged host module loader when supplied; the DOM below is an explicit host-contract fixture.
 export function readAsar(path, file) {
   const bytes = readFileSync(path), header = JSON.parse(bytes.subarray(16, 16 + bytes.readUInt32LE(12)));
@@ -19,8 +27,8 @@ export function readAsar(path, file) {
   const offset = 8 + bytes.readUInt32LE(4) + Number(entry.offset);
   return bytes.subarray(offset, offset + entry.size).toString();
 }
-export async function fixture({ config, pins, legacyPins, legacyConfig, loaderSource, clientSource, fetcher, initialMetadata = [] } = {}) {
-  const dom = new JSDOM(`<html lang="zh"><head></head><body>${pageHTML}<main id="settings"></main><aside id="unrelated"><ul><li>其他页面</li></ul></aside></body></html>`, { url: 'http://localhost', pretendToBeVisual: true });
+export async function fixture({ config, pins, legacyPins, legacyConfig, loaderSource, clientSource, fetcher, initialMetadata = [], pageHtml } = {}) {
+  const dom = new JSDOM(`<html lang="zh"><head></head><body>${pageHtml || pageHTML}<main id="settings"></main><aside id="unrelated"><ul><li>其他页面</li></ul></aside></body></html>`, { url: 'http://localhost', pretendToBeVisual: true });
   const { window } = dom, { document } = window;
   const prior = {};
   for (const key of ['window', 'document', 'IS_REACT_ACT_ENVIRONMENT']) {

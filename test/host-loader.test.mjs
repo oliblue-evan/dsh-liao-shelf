@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { fixture, readAsar } from './harness.mjs';
+import { fixture, readAsar, pageHTMLV022, pinsKey } from './harness.mjs';
 
 const asar = process.env.DSH_ASAR || '/Applications/DeepSeek Harness.app/Contents/Resources/app.asar';
 const available = existsSync(asar);
@@ -34,10 +34,10 @@ test('动态加载并移除其他插件时，真实宿主不得认领或删除�
     assert.equal(style.isConnected, false, 'Shelf unload must still remove its own stylesheet');
   } finally { await f.close(); }
 });
-test('DSH 0.2.1-rc.2 实际模块加载器加载发布入口；交互场景记录', { skip: available ? false : 'Set DSH_ASAR to the exact 0.2.1-rc.2 desktop app.asar' }, async () => {
+test('DSH 0.2.2-rc.1 实际模块加载器加载发布入口；交互场景记录', { skip: available ? false : 'Set DSH_ASAR to the exact 0.2.2-rc.1 desktop app.asar' }, async () => {
   const root = 'dsh/node_modules/@deepseek-ai/';
   const version = JSON.parse(readAsar(asar, root + 'dsh-client-ui-plugin-manager/package.json')).version;
-  assert.equal(version, '0.2.1-rc.2', 'Target drift requires a new host-contract review');
+  assert.equal(version, '0.2.2-rc.1', 'Target drift requires a new host-contract review');
   const f = await fixture({ loaderSource: readAsar(asar, root + 'dsh-client-modules/lib/client.js') });
   const transcript = [];
   function record(step) {
@@ -70,5 +70,21 @@ test('DSH 0.2.1-rc.2 实际模块加载器加载发布入口；交互场景记�
       issueText: f.card('broken-plugin').querySelector('.dps-issue').getAttribute('aria-label') });
     await f.dispose(); transcript.push({ step: 'dispose', slots: f.slots.size, injectedElements: f.document.querySelectorAll('[data-dps-page],.dps-tools,.dps-pin,[data-dps-style]').length });
     assert.deepEqual(transcript, JSON.parse(readFileSync(new URL('./snapshots/shelf.json', import.meta.url))));
+  } finally { await f.close(); }
+});
+
+test('DSH 0.2.2-rc.1 真实加载器 + 新版页面结构（页头下沉）：书架仍生效', { skip: available ? false : 'Set DSH_ASAR to the exact desktop app.asar' }, async () => {
+  const root = 'dsh/node_modules/@deepseek-ai/';
+  const version = JSON.parse(readAsar(asar, root + 'dsh-client-ui-plugin-manager/package.json')).version;
+  assert.equal(version, '0.2.2-rc.1', 'Target drift requires a new host-contract review');
+  const f = await fixture({ loaderSource: readAsar(asar, root + 'dsh-client-modules/lib/client.js'), pageHtml: pageHTMLV022 });
+  try {
+    assert.ok(f.modules.loadCache.has('dsh-liao-shelf'), '真实加载器应登记书架');
+    assert.equal(f.document.querySelector('[data-plugin-panel] > header'), null, '新版页头不是直接子元素');
+    assert.ok(f.document.querySelector('.dps-tools'), '工具栏应挂载（这正是 0.7.1 失效的点）');
+    assert.equal(f.visible().length, 6);
+    await f.search('用量'); assert.deepEqual(f.visible(), ['pkg:dsh-usage-pill']);
+    await f.click('[data-dps-key="pkg:dsh-usage-pill"] .dps-pin');
+    assert.deepEqual(JSON.parse(f.window.localStorage.getItem(pinsKey)), ['pkg:dsh-usage-pill'], '置顶在新版结构下应可写入');
   } finally { await f.close(); }
 });

@@ -1,6 +1,6 @@
 {
   "name": "dsh-liao-shelf",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "插件书架：优化 DSH 官方插件页的搜索、筛选、折叠、置顶、视图与安装信息。Plugin Shelf: visual organization for the native DSH plugins page.",
   "license": "MIT",
   "type": "module",
@@ -63,7 +63,8 @@
     "compatibility": {
       "dshReleases": {
         "0.2.0-rc.2": "compatible",
-        "0.2.1-rc.2": "compatible"
+        "0.2.1-rc.2": "compatible",
+        "0.2.2-rc.1": "compatible"
       }
     }
   },

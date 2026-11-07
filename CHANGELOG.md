@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.2
+
+- **修复：DSH 0.2.2 起整个书架不显示。** 0.2.2 把插件页页头从 `[data-plugin-panel]` 的直接子元素下沉到 `[data-plugin-panel] > [data-plugin-body] > [data-plugin-bar] > header`（直接子 `header` 只在「更多」视图保留），而书架用 `:scope > header` 定位页头并在缺失时整体退出，于是工具栏、搜索、排序、置顶、折叠与安装信息全部静默消失。
+- 改为优先取 `[data-plugin-bar]`、回退取旧的直接子 `header`，一个构建同时服务 0.2.2 与 ≤0.2.1 宿主；两个锚点都缺失时保持不挂载，并输出一条带宿主版本的 `console.warn`，避免再次"静默消失"。
+- **修复：工具栏重复叠出多份。** 同一函数里"查找已存在工具栏"仍是 `:scope > .dps-tools`，而工具栏现在挂在 `[data-plugin-bar]` 旁边（嵌套在 pageBody 内，不再是 page 的直接子元素），于是每轮增强都判定"没有工具栏"并再插一个，界面上叠出多份搜索框与筛选行。改为在 page 内不限层级查找，并自动清理多余副本；`cleanup()` 的清理清单同步放宽（`.dps-tools` / `.dps-quick` / `.dps-empty`）。
+- 新增 `test/plugin-page-shape.test.mjs`：分别钉住 0.2.2 结构、旧结构、"有卡片但无锚点"的降级行为，以及**多轮增强只保留一个工具栏**的幂等性（该用例对修复前代码会报 6 份）；`test/host-loader.test.mjs` 的宿主契约门禁目标更新到 `0.2.2-rc.1`，并新增一条"真实加载器 + 新版页面结构"的端到端用例。
+- `compatibility.dshReleases` 补记 `0.2.2-rc.1`。
+
 ## 0.7.0
 
 - 重排设置页：去掉重复标题，单卡预览与布局／密度／排序并排，浏览偏好、置顶管理与备份默认折叠。
