@@ -1,6 +1,7 @@
 {
   "meta": {
     "title": "Plugin Shelf",
-    "description": "Enhance the native plugins page: search, filters, folding, pins, minimal layouts and installation-date sorting."
+    "description": "Enhance the native plugins page: search, filters, folding, pins, minimal layouts and installation-date sorting.",
+    "detail": "docs/detail.en.md"
   }
 }

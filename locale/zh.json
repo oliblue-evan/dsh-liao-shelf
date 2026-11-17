@@ -1,6 +1,7 @@
 {
   "meta": {
     "title": "插件书架",
-    "description": "优化官方插件页：搜索、筛选、折叠、置顶、极简视图与安装时间排序。"
+    "description": "优化官方插件页：搜索、筛选、折叠、置顶、极简视图与安装时间排序。",
+    "detail": "docs/detail.zh.md"
   }
 }

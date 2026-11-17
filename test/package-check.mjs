@@ -14,7 +14,7 @@ try {
   if (pnpm && /pnpm/.test(pnpm)) execFileSync(process.execPath, [pnpm, 'pack', '--out', archive], { stdio: 'pipe' });
   else execFileSync('pnpm', ['pack', '--out', archive], { stdio: 'pipe' });
   const entries = execFileSync('tar', ['-tzf', archive], { encoding: 'utf8' }).trim().split('\n').sort();
-  const expected = ['CHANGELOG.md', 'LICENSE', 'README.en.md', 'README.md', 'cordis.patch.yml', 'dsh-plugin.naming.json', 'lib/client.js', 'lib/index.js', 'lib/metadata.js', 'locale/en.json', 'locale/zh.json', 'package.json'].map((path) => 'package/' + path).sort();
+  const expected = ['CHANGELOG.md', 'LICENSE', 'README.en.md', 'README.md', 'cordis.patch.yml', 'docs/detail.en.md', 'docs/detail.zh.md', 'docs/preview.en.svg', 'docs/preview.zh.svg', 'dsh-plugin.naming.json', 'lib/client.js', 'lib/index.js', 'lib/metadata.js', 'locale/en.json', 'locale/zh.json', 'package.json'].map((path) => 'package/' + path).sort();
   assert.deepEqual(entries, expected, 'Only reviewed runtime files and documentation belong in the artifact');
   const read = (file) => execFileSync('tar', ['-xOf', archive, 'package/' + file], { encoding: 'utf8' });
   const manifest = JSON.parse(read('package.json'));
