@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.3
+
+- 在 DSH 0.2.2-rc.3 上复核宿主契约：真实模块加载器仍能登记书架，页头 `[data-plugin-bar]` 锚点、工具栏幂等挂载、置顶写入与卸载清理全部保持原行为，交互场景快照无差异。测试门禁目标与 `compatibility.dshReleases` 同步到 `0.2.2-rc.3`。
+- 无功能改动：本次只有宿主版本门禁更新，插件代码未变。
+
 ## 0.7.2
 
 - **修复：DSH 0.2.2 起整个书架不显示。** 0.2.2 把插件页页头从 `[data-plugin-panel]` 的直接子元素下沉到 `[data-plugin-panel] > [data-plugin-body] > [data-plugin-bar] > header`（直接子 `header` 只在「更多」视图保留），而书架用 `:scope > header` 定位页头并在缺失时整体退出，于是工具栏、搜索、排序、置顶、折叠与安装信息全部静默消失。
