@@ -104,3 +104,24 @@ test('0.2.2 结构：反复置顶只保留一个常用插件分组', async () =>
   await f.click(pin);
   assert.equal(f.document.querySelectorAll('.dps-quick').length, 1, '重新置顶应恢复且只有一个分组');
 }));
+
+// The host paints its sticky plugin header with z-index 2 and the cards sit later in
+// the DOM, so any card control at the same z-index paints on top of the header while
+// the list scrolls — the pins and switches showed through the tabs. Card controls must
+// stay strictly below the header's layer.
+test('卡片控件的层级低于吸顶页头，滚动时不会盖住页头', async () => using({ pageHtml: pageHTMLV022 }, async (f) => {
+  const style = f.document.querySelector('[data-dps-style]').textContent;
+  const rule = (selector) => {
+    const match = style.match(new RegExp(selector.replace(/[[\]=]/g, '\\$&') + '\\{([^}]*)\\}'));
+    assert.ok(match, `样式表里应存在 ${selector} 规则`);
+    return match[1];
+  };
+  const zIndexOf = (selector) => {
+    const value = rule(selector).match(/z-index:(\d+)/);
+    return value ? Number(value[1]) : 0;
+  };
+  const end = zIndexOf('[data-dps-part=end]');
+  const pin = zIndexOf('.dps-pin');
+  assert.ok(end < 2, `卡片右侧控件 z-index 必须低于宿主页头的 2，实际 ${end}`);
+  assert.ok(pin < 2, `图钉 z-index 必须低于宿主页头的 2，实际 ${pin}`);
+}));
