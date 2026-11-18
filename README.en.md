@@ -6,7 +6,7 @@ Search, filter and pin everyday plugins in DeepSeek Harness.
 
 ## Features
 
-- 0.7.5 fixes: pins and switches no longer paint over the sticky header while scrolling, and no blank strip is left under the header. Since 0.7.4: repeated pinning no longer stacks duplicate "pinned" groups, and pin/filter changes repaint even when the window is backgrounded.
+- 0.7.7 fixes: the switch on pinned cards now looks exactly like the host's native switch (white track, dark thumb when checked) instead of inheriting the shelf's blue button styling. 0.7.6 fixes: pinned plugins now render as the same cards as the groups below (icon, description, status, version and switch), and pinned icons no longer disappear; the sticky header repaints on theme switches instead of keeping the previous palette; the empty state stays inside the scroll viewport instead of being pushed below the fold; the "More" list scrolls its toolbar and pinned shortcuts with the list instead of pinning them above half the viewport; and a "not running" bundle now gets a localized label, counts as a problem, and carries the issue badge. Since 0.7.5: pins and switches no longer paint over the sticky header while scrolling, and no blank strip is left under the header.
 - Compact settings with a live preview beside common controls. Browsing preferences, pin management and backups are collapsed by default. Sorting uses the same custom menu across platforms.
 - Toggle descriptions, versions and installation dates separately. Minimal view keeps only the logo, name, pin and native switch.
 - Optionally remember search and filters when reopening the plugin list.
@@ -40,7 +40,7 @@ GitHub installs receive pushed changes only, not an unpublished local working tr
 
 Preferences are local to the browser: `liao-plugin-shelf.config` and `liao-plugin-shelf.pins`. Existing configuration is read automatically; legacy name-based pins migrate when matching cards appear. Unmatched pins are retained for manual removal. Legacy keys remain for rollback, but new changes are not written back to them. Storage failures show a notice; session-only changes remain usable.
 
-Current development target: **DSH 0.2.1-rc.2 Desktop**. The adapter uses semantic `data-plugin-*` attributes rather than CSS hashes or translated action labels. The new `basic`, `extensions` and `more` groups count as Official; `bundles` count as Installed. The legacy `official` group remains supported. It changes CSS ordering without moving native React nodes, and cleans up elements, observers, events and slot registrations on disposal. Unrecognized host views stay native.
+Current development target: **DSH 0.2.2-rc.5 Desktop** (the plugin page structure has been stable since rc.3, so one build covers rc.1, rc.3 and rc.5). The adapter uses semantic `data-plugin-*` attributes rather than CSS hashes or translated action labels. The new `basic`, `extensions` and `more` groups count as Official; `bundles` count as Installed. The legacy `official` group remains supported. It changes CSS ordering without moving native React nodes, and cleans up elements, observers, events and slot registrations on disposal. Unrecognized host views stay native.
 
 Built-in configuration items with no switch are labelled built-in, rather than being counted as enabled plugins.
 

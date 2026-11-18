@@ -125,3 +125,73 @@ test('卡片控件的层级低于吸顶页头，滚动时不会盖住页头', as
   assert.ok(end < 2, `卡片右侧控件 z-index 必须低于宿主页头的 2，实际 ${end}`);
   assert.ok(pin < 2, `图钉 z-index 必须低于宿主页头的 2，实际 ${pin}`);
 }));
+
+// DSH reports four statuses, not three: besides running/disabled/problem there is
+// 'not-running' — enabled, but none of the bundle's rows has a live entry. The shelf
+// only knew the first three, so that state rendered the raw English token in the card
+// footer and was excluded from the 异常 filter, making a failed start look healthy.
+const pageHtmlNotRunning = `<section data-plugin-panel><div data-plugin-body="true"><div data-plugin-bar="true"><header class="pageHead"><h1>插件</h1></header></div><section data-plugin-group="bundles"><div><h3>已安装</h3><span data-plugin-count="2">2</span></div><ul>${card('dsh-dead', '没启动起来', '启用了但没跑起来', 'not-running')}${card('dsh-ok', '正常插件', '正常运行', 'running')}</ul></section></div></section>`;
+
+test('not-running 状态显示本地化标签、计入异常筛选并打上角标', async () => using({ pageHtml: pageHtmlNotRunning }, async (f) => {
+  const dead = f.card('dsh-dead');
+  assert.equal(dead.querySelector('.dps-status').textContent, '未运行', '不能把宿主原始状态串漏到界面上');
+  assert.equal(dead.querySelector('.dps-status').getAttribute('data-state'), 'problem', '未启动应按异常着色');
+  assert.ok(dead.querySelector('.dps-issue'), '未启动的插件要带异常角标');
+
+  const problem = [...f.document.querySelectorAll('[data-dps-action=filter]')].find((el) => el.getAttribute('data-filter') === 'problem');
+  assert.match(problem.textContent, /1$/, '异常筛选应包含未启动的插件');
+  await f.click('[data-dps-action=filter][data-filter=problem]');
+  assert.deepEqual(f.visible(), ['pkg:dsh-dead']);
+}));
+
+// 0.2.2 把滚动容器下沉成 [data-plugin-body]，空状态原来 append 到 [data-plugin-panel]，
+// 于是落在滚动视口之外、被推到窗口底部。它必须跟着工具栏留在滚动容器里。
+test('0.2.2 结构：空搜索状态留在滚动容器内', async () => using({ pageHtml: pageHTMLV022 }, async (f) => {
+  await f.search('根本不存在');
+  const empty = f.document.querySelector('.dps-empty');
+  assert.ok(empty, '无匹配结果时应显示空状态');
+  assert.ok(empty.closest('[data-plugin-body]'), '空状态必须位于滚动容器 [data-plugin-body] 内');
+  assert.equal(empty.previousElementSibling?.className, 'dps-tools', '空状态应紧跟工具栏');
+  await f.click('.dps-empty button');
+  assert.equal(f.document.querySelector('.dps-empty'), null, '清除筛选后空状态应移除');
+}));
+
+// 置顶卡片是重建出来的，开关必须带上 data-dps-action 与 data-dps-key 才能转发到宿主开关。
+// 少了 key 时按钮看起来正常、点击却什么也不做——这类“静默失效”只能靠用例挡住。
+test('置顶卡片上的开关与图钉都能驱动宿主卡片', async () => using({ pageHtml: pageHTMLV022, pins: ['pkg:dsh-usage-pill'] }, async (f) => {
+  const copy = f.document.querySelector('[data-dps-shortcut-card]');
+  assert.ok(copy, '置顶后应出现卡片');
+  const toggle = copy.querySelector('.dps-shortcut-switch');
+  assert.ok(toggle, '置顶卡片要有开关');
+  assert.equal(toggle.getAttribute('data-dps-action'), 'toggle');
+  assert.equal(toggle.getAttribute('data-dps-key'), 'pkg:dsh-usage-pill');
+
+  let clicks = 0;
+  const native = f.card('dsh-usage-pill').querySelector('[role=switch]');
+  native.addEventListener('click', () => clicks++);
+  await f.click('[data-dps-shortcut-card] .dps-shortcut-switch');
+  assert.equal(clicks, 1, '点击置顶开关必须转发到宿主开关一次');
+
+  await f.click('[data-dps-shortcut-card] .dps-unpin');
+  assert.deepEqual(JSON.parse(f.window.localStorage.getItem('liao-plugin-shelf.pins')), [], '置顶卡片上的图钉应取消置顶');
+}));
+
+// 置顶区的图标是从卡片里克隆出来的内联 SVG。宿主有两类图标：一类是 <img src="data:...">，
+// 另一类直接内联 SVG，并用 <defs> 里的渐变配合 fill="url(#id)" 上色。克隆时若把 id 或
+// url() 属性当成不安全内容剥掉，渐变引用就断了，图形没有填充色，看起来像图标消失了。
+const pageHtmlGradientIcon = `<section data-plugin-panel><div data-plugin-body="true"><div data-plugin-bar="true"><header class="pageHead"><h1>插件</h1></header></div><section data-plugin-group="bundles"><div><h3>已安装</h3><span data-plugin-count="1">1</span></div><ul><li data-plugin-package="dsh-gradient" data-plugin-status="running"><div class="host_head"><span class="host_icon"><svg viewBox="0 0 36 36" fill="none"><defs><linearGradient id="art-a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7aa2ff"/><stop offset="1" stop-color="#3355ff"/></linearGradient></defs><path d="M6 6h24v24H6z" fill="url(#art-a)"/></svg></span><div class="host_main"><div><button aria-describedby="desc-g">渐变图标插件</button></div><span id="desc-g">测试渐变克隆</span></div><div class="host_end"><button role="switch" aria-checked="true"></button></div></div></li></ul></section></div></section>`;
+
+test('置顶快捷入口保留内联 SVG 的渐变，图标不会因克隆而变空', async () => using({ pageHtml: pageHtmlGradientIcon }, async (f) => {
+  await f.click('[data-dps-key="pkg:dsh-gradient"] .dps-pin');
+  const logo = f.document.querySelector('.dps-shortcuts [data-dps-part=icon]');
+  assert.ok(logo, '置顶后应出现快捷入口');
+  const svg = logo.querySelector('svg');
+  assert.ok(svg, '图标必须是克隆的 SVG');
+  const gradient = svg.querySelector('linearGradient');
+  assert.ok(gradient, '渐变定义不能丢');
+  const fill = svg.querySelector('path').getAttribute('fill');
+  assert.match(fill, /^url\(#/, '填充仍应是 url(#…) 引用');
+  assert.equal(fill, `url(#${gradient.id})`, '引用必须指向克隆后重命名的渐变 id');
+  assert.notEqual(gradient.id, 'art-a', 'id 必须重命名，避免与卡片里的原始渐变冲突');
+  assert.equal(f.document.querySelectorAll('#art-a').length, 1, '原始卡片的 id 保持唯一');
+}));
