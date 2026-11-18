@@ -66,7 +66,7 @@ GitHub 安装获取已推送的版本，本地工作区修改不会自动发布�
 
 自动读取旧版配置。旧收藏在对应卡片出现时迁移为稳定 ID；无法匹配的条目保留，可在设置中移除。旧键保留，便于回退；新版本的修改不会同步回旧键。浏览器不允许保存偏好时，分别提示显示设置或置顶未保存，并继续支持本次会话使用。可点击「重试保存」保存当前值；其他项目保存成功不会误清除失败提示。
 
-当前开发适配目标：**DSH 0.2.2-rc.1 桌面版**。使用 `data-plugin-panel`、`data-plugin-bar`、`data-plugin-group`、`data-plugin-package`、`data-plugin-item` 和 `data-plugin-status` 识别原生界面，不依赖 CSS 构建哈希或翻译后的按钮名称。**0.2.2 把页头从 `[data-plugin-panel]` 的直接子元素下沉到 `[data-plugin-panel] > [data-plugin-body] > [data-plugin-bar] > header`**（直接子 `header` 只在「更多」视图保留），所以定位优先取 `[data-plugin-bar]`、回退取旧的直接子 `header`，一个构建同时服务新旧宿主。新版分组 `basic`、`extensions` 与 `more` 归入「官方」筛选，`bundles` 归入「已安装」；旧版 `official` 分组仍受支持。排序只调整 CSS 顺序，不移动宿主 React 节点。停用／热更新时清理增强元素、观察器、事件监听和槽位注册。
+当前开发适配目标：**DSH 0.2.2-rc.3 桌面版**。使用 `data-plugin-panel`、`data-plugin-bar`、`data-plugin-group`、`data-plugin-package`、`data-plugin-item` 和 `data-plugin-status` 识别原生界面，不依赖 CSS 构建哈希或翻译后的按钮名称。**0.2.2 把页头从 `[data-plugin-panel]` 的直接子元素下沉到 `[data-plugin-panel] > [data-plugin-body] > [data-plugin-bar] > header`**（直接子 `header` 只在「更多」视图保留），所以定位优先取 `[data-plugin-bar]`、回退取旧的直接子 `header`，一个构建同时服务新旧宿主。新版分组 `basic`、`extensions` 与 `more` 归入「官方」筛选，`bundles` 归入「已安装」；旧版 `official` 分组仍受支持。排序只调整 CSS 顺序，不移动宿主 React 节点。停用／热更新时清理增强元素、观察器、事件监听和槽位注册。
 
 若宿主不再提供这些标记，无法识别的界面保持原样，并在控制台输出一条带宿主版本的告警（`[dsh-liao-shelf] plugin page anchor missing…`），便于下次快速定位而不是"静默消失"。TUI 不受影响。
 
