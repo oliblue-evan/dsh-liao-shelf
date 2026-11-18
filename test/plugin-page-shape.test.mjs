@@ -82,3 +82,25 @@ test('≤0.2.1 结构：多轮增强同样只保留一个工具栏', async () =>
   await extraPasses(f);
   assert.equal(f.document.querySelectorAll('.dps-tools').length, 1);
 }));
+
+// The shortcut block lives inside [data-plugin-body], so the old `:scope > .dps-quick`
+// lookup never found the copy it had just inserted: every pin toggle appended another
+// 常用插件 section, and the page grew one group per click.
+test('0.2.2 结构：反复置顶只保留一个常用插件分组', async () => using({ pageHtml: pageHTMLV022 }, async (f) => {
+  const pin = '[data-dps-key="pkg:dsh-github-auth"] .dps-pin';
+  // 交替置顶/取消五次：分组每次要么恰好一个，要么整体消失，绝不累积。
+  for (let i = 0; i < 5; i++) {
+    await f.click(pin);
+    const expected = i % 2 === 0 ? 1 : 0;
+    assert.equal(f.document.querySelectorAll('.dps-quick').length, expected, `第 ${i + 1} 次点击后分组数量不对`);
+  }
+  // 多个置顶项时只应有一个分组，取消到最后一个才整体移除。
+  await f.click('[data-dps-key="pkg:dsh-usage-pill"] .dps-pin');
+  assert.equal(f.document.querySelectorAll('.dps-quick').length, 1, '两个置顶项共用一个分组');
+  await f.click(pin);
+  assert.equal(f.document.querySelectorAll('.dps-quick').length, 1, '还有置顶项时分组必须保留');
+  await f.click('[data-dps-key="pkg:dsh-usage-pill"] .dps-pin');
+  assert.equal(f.document.querySelectorAll('.dps-quick').length, 0, '取消置顶后分组应整体移除');
+  await f.click(pin);
+  assert.equal(f.document.querySelectorAll('.dps-quick').length, 1, '重新置顶应恢复且只有一个分组');
+}));
