@@ -6,6 +6,7 @@ Search, filter and pin everyday plugins in DeepSeek Harness.
 
 ## Features
 
+- 0.7.4 fixes: repeated pinning no longer stacks duplicate "pinned" groups, the sticky header is opaque while scrolling, and pin/filter changes repaint even when the window is backgrounded.
 - Compact settings with a live preview beside common controls. Browsing preferences, pin management and backups are collapsed by default. Sorting uses the same custom menu across platforms.
 - Toggle descriptions, versions and installation dates separately. Minimal view keeps only the logo, name, pin and native switch.
 - Optionally remember search and filters when reopening the plugin list.
